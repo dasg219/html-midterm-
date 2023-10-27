@@ -1,0 +1,81 @@
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Gradebook</title>
+</head>
+
+<body>
+    <h1>Student Gradebook</h1>
+
+    <form>
+        Student Name: <input type="text" name="name" required><br>
+        Student Grade: <input type="number" name="grade" min="0" max="100" required><br>
+        <input type="button" value="Submit" onclick="addStudent()">
+    </form>
+
+    <br><br>
+
+    <h2>Student List</h2>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Original Grade</th>
+            <th>Letter Grade</th>
+            <th>Adjusted Grade</th>
+            <th>Adjusted Letter Grade</th>
+        </tr>
+        <!-- Add student rows here dynamically -->
+    </table>
+
+    <br>
+    <div id="studentCount"></div>
+    <div id="totalGrades"></div>
+    <div id="averageGrade"></div>
+
+    <script>
+        function addStudent() {
+            var name = document.querySelector('[name="name"]').value;
+            var grade = parseInt(document.querySelector('[name="grade"]').value);
+
+            var table = document.querySelector('table');
+            var row = table.insertRow(-1);
+            row.innerHTML = `
+                <td>${name}</td>
+                <td>${grade}</td>
+                <td>${getLetterGrade(grade)}</td>
+                <td>${(grade * 1.1).toFixed(1)}</td>
+                <td>${getLetterGrade(grade * 1.1)}</td>
+            `;
+
+            updateStats();
+        }
+
+        function getLetterGrade(grade) {
+            if (grade >= 90) return 'A';
+            else if (grade >= 80) return 'B';
+            else if (grade >= 70) return 'C';
+            else if (grade >= 60) return 'D';
+            else return 'F';
+        }
+
+        function updateStats() {
+            var students = document.querySelectorAll('table tr:not(:first-child)');
+
+            document.getElementById('studentCount').innerText = 'Number of students: ' + students.length;
+
+            var totalGrades = 0;
+            students.forEach(function (student) {
+                totalGrades += parseInt(student.children[1].innerText);
+            });
+            document.getElementById('totalGrades').innerText = 'Total original grades: ' + totalGrades;
+
+            var averageGrade = totalGrades / students.length;
+            document.getElementById('averageGrade').innerText = 'Average original grade: ' + averageGrade.toFixed(2);
+        }
+    </script>
+</body>
+
+</html>
